@@ -65,6 +65,8 @@ const CONFIG = {
     { name: "Spotify",   url: "https://open.spotify.com/user/31e2wvcsa45mf3phjwj3huplxyzu", icon: "assets/icons/spotify.png"   },
     { name: "TikTok",    url: "https://www.tiktok.com/@akuma.32__",           icon: "assets/icons/tiktok.png"    },
     { name: "Github",  url: "https://github.com/akuma3232",          icon: "assets/icons/github.png"  },
+    { name: "Discord", url: "https://discord.gg/xd4hYQRzXb",     icon: "assets/icons/discord.png"},
+    { name: "Reddit", url: "https://www.reddit.com/user/AKUMA__32/",     icon: "assets/icons/reddit.png"},
 ,
   ],
   iconSize:         "36px",
