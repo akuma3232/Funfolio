@@ -10,7 +10,14 @@ const CONFIG = {
   profileName:   "𝓐𝓴𝓾𝓶𝓪 💢 - 恐 敬",      // name shown on the card
   nameTooltip:   "The Best Emperor",         // tooltip on hover over the name
   nameEffect:    "noise",         // "noise" = TV interference | "none" = plain text
-  statusText:    "🧑‍💻 Software Engineer | Cybersecurity Expert", // text below the name (typewriter effect)
+  // Multiple status texts — will cycle through them one by one
+  statusTexts: [
+    "🧑‍💻 Software Engineer | Cybersecurity Expert",
+    "🕵️ Detective Conan fan since forever",
+    "🇲🇦 Proud Moroccan Emperor",
+    "🔐 Breaking things to make them secure",
+  ],
+  statusText:    "🧑‍💻 Software Engineer | Cybersecurity Expert", // fallback (single)
   tabTitle:      "@𝓐𝓴𝓾𝓶𝓪 💢 - 恐 敬",      // animated browser tab title
   entrySymbol:   "👑 𝓣𝓱𝓮 𝓔𝓶𝓹𝓮𝓻𝓸𝓻 たカ援 ♔",            // symbol shown on the entry screen
 
@@ -69,7 +76,6 @@ const CONFIG = {
     { name: "Reddit", url: "https://www.reddit.com/user/AKUMA__32/",     icon: "assets/icons/reddit.png"},
     { name: "Youtube ", url: "https://www.youtube.com/@akuma3232",     icon: "assets/icons/youtube.png"},
     { name: "Pinterest", url: "https://www.pinterest.com/akuma32__/",     icon: "assets/icons/pinterest.png"},
-,
   ],
   iconSize:         "36px",
   iconBorderRadius: "8px",

@@ -118,6 +118,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // -- Cursor sparkle trail (active from page load) --
   initCursorTrail();
 
+  // -- Visit counter --
+  initVisitCounter();
+
   // --------------------------------------------------------
   // Entry screen click — starts everything
   // --------------------------------------------------------
@@ -133,7 +136,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setTimeout(() => {
       profileCard.classList.add("revealed");
-      initTypewriter(document.getElementById("profile-status"), CONFIG.statusText, 60);
+
+      // Cycle through multiple status texts if available
+      const texts = CONFIG.statusTexts && CONFIG.statusTexts.length
+        ? CONFIG.statusTexts
+        : [CONFIG.statusText];
+      initCyclingTypewriter(document.getElementById("profile-status"), texts, 60);
     }, CONFIG.cardRevealDelay);
   });
 
@@ -177,6 +185,24 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+
+
+// ============================================================
+// VISIT COUNTER
+// Increments a localStorage counter and shows it after entry.
+// ============================================================
+function initVisitCounter() {
+  const key   = "funfolio_visits";
+  const count = (parseInt(localStorage.getItem(key) || "0", 10)) + 1;
+  localStorage.setItem(key, count);
+
+  const el   = document.getElementById("visit-counter");
+  const text = document.getElementById("visit-count-text");
+  text.textContent = count === 1 ? "1st visit 👑" : `${count.toLocaleString()} visits`;
+
+  // Show after a brief delay
+  setTimeout(() => el.classList.add("visible"), 1200);
+}
 
 
 // ============================================================
@@ -241,33 +267,36 @@ function initTabTitle(text) {
 
 
 // ============================================================
-// STATUS TYPEWRITER
-// Types the status text, pauses, deletes, and repeats.
-// The blinking cursor "|" is added via CSS (::after on #profile-status).
+// CYCLING STATUS TYPEWRITER
+// Types each status text, pauses, deletes, then moves to next.
 // ============================================================
-function initTypewriter(el, text, speed = 80) {
-  let i          = 0;
+function initCyclingTypewriter(el, texts, speed = 70) {
+  let textIndex  = 0;
+  let charIndex  = 0;
   let isDeleting = false;
 
   function tick() {
+    const current = texts[textIndex];
+
     if (!isDeleting) {
-      el.textContent = text.substring(0, i);
-      i++;
-      if (i > text.length) {
-        setTimeout(() => { isDeleting = true; tick(); }, 1800);
+      el.textContent = current.substring(0, charIndex + 1);
+      charIndex++;
+      if (charIndex >= current.length) {
+        setTimeout(() => { isDeleting = true; tick(); }, 2000);
         return;
       }
     } else {
-      el.textContent = text.substring(0, i);
-      i--;
-      if (i < 0) {
-        i = 0;
+      el.textContent = current.substring(0, charIndex);
+      charIndex--;
+      if (charIndex < 0) {
+        charIndex  = 0;
         isDeleting = false;
-        setTimeout(tick, 500);
+        textIndex  = (textIndex + 1) % texts.length;
+        setTimeout(tick, 400);
         return;
       }
     }
-    setTimeout(tick, isDeleting ? speed * 0.5 : speed);
+    setTimeout(tick, isDeleting ? speed * 0.45 : speed);
   }
 
   tick();
@@ -304,11 +333,11 @@ function initParticles() {
       particles.push({
         baseX:      Math.random() * canvas.width,
         y:          Math.random() * canvas.height * 1.5 - canvas.height * 0.5,
-        r:          1 + Math.random() * 1.8,
+        r:          0.8 + Math.random() * 1.8,
         swayPhase:  Math.random() * Math.PI * 2,
         swaySpeed:  (Math.random() * 0.6 + 0.7) / particleSwayDuration,
         fallSpeed:  (canvas.height * 1.1) / (particleFallDuration * 60) * (0.7 + Math.random() * 0.6),
-        opacity:    0.4 + Math.random() * 0.6,
+        opacity:    0.3 + Math.random() * 0.65,
       });
     }
   }
@@ -399,12 +428,12 @@ function initCursorTrail() {
         particles.push({
           x:             mouseX,
           y:             mouseY,
-          vx:            (Math.random() - 0.5) * 1.2,
-          vy:            (Math.random() - 0.5) * 1.2,
+          vx:            (Math.random() - 0.5) * 1.4,
+          vy:            (Math.random() - 0.5) * 1.4,
           life:          1,
           size:          shootingStarSize * (0.5 + Math.random() * 0.7),
           rotation:      Math.random() * Math.PI * 2,
-          rotationSpeed: (Math.random() - 0.5) * 0.12,
+          rotationSpeed: (Math.random() - 0.5) * 0.14,
           twinklePhase:  Math.random() * Math.PI * 2,
           color:         shootingStarColors[Math.floor(Math.random() * shootingStarColors.length)],
         });
@@ -416,8 +445,8 @@ function initCursorTrail() {
     particles.forEach((p) => {
       p.x        += p.vx;
       p.y        += p.vy;
-      p.vx       *= 0.97;
-      p.vy       *= 0.97;
+      p.vx       *= 0.96;
+      p.vy       *= 0.96;
       p.rotation += p.rotationSpeed;
       p.life     -= 1 / shootingStarFadeFrames;
 

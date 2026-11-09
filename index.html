@@ -12,6 +12,8 @@
     <!-- Entry screen — first thing visible on load -->
     <div id="entry-screen">
       <div id="entry-symbol"></div>
+      <div id="entry-hint">click to enter</div>
+      <div id="entry-loader"></div>
     </div>
 
     <div id="main-content">
@@ -41,6 +43,12 @@
       <!-- Volume toggle button -->
       <button id="volume-btn" aria-label="Toggle sound">🔊</button>
 
+      <!-- Visit counter -->
+      <div id="visit-counter">
+        <span class="vc-dot"></span>
+        <span id="visit-count-text">1 visit</span>
+      </div>
+
       <!-- Profile card -->
       <div id="profile-card">
 
@@ -64,6 +72,9 @@
           </div>
         </div>
 
+        <!-- Divider -->
+        <div class="card-divider"></div>
+
         <!-- Section 2: Discord presence (static, edit in config.js) -->
         <div id="discord-presence">
           <div id="discord-avatar-wrapper">
@@ -73,6 +84,10 @@
           <div id="discord-info">
             <span id="discord-username"></span>
             <span id="discord-activity"></span>
+          </div>
+          <!-- Animated music equalizer bars -->
+          <div id="music-bars">
+            <span></span><span></span><span></span><span></span><span></span>
           </div>
         </div>
 
