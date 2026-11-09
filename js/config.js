@@ -48,9 +48,16 @@ const CONFIG = {
     { icon: "assets/badges/conan.png", label: "Best Anime"},
     { icon: "assets/badges/supervisor.png", label: "Supervisor"},
   ],
-  badgeSize:                "22px",
+  badgeSize:                "28px",  // enlarged badge size (was 22px)
   badgeContainerBackground: "rgba(172, 200, 255, 0.08)",
-  badgeContainerBorder:     "2px solid rgba(172, 200, 255, 0.04)",
+  badgeContainerBorder:     "1.5px solid rgba(172, 200, 255, 0.12)",
+
+  // ----------------------------------------------------------
+  // TIME & LOCATION DISPLAY
+  // ----------------------------------------------------------
+  showLiveClock:   true,
+  locationName:    "🇲🇦 Casablanca",
+  timezone:        "Africa/Casablanca",
 
   // ----------------------------------------------------------
   // DISCORD (static — no API, edit manually)

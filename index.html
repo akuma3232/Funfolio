@@ -12,7 +12,7 @@
     <!-- Entry screen — first thing visible on load -->
     <div id="entry-screen">
       <div id="entry-symbol"></div>
-      <div id="entry-hint">click to enter</div>
+      <div id="entry-hint">click or press space to enter</div>
       <div id="entry-loader"></div>
     </div>
 
@@ -40,21 +40,33 @@
       <!-- Background particles canvas -->
       <canvas id="bg-canvas"></canvas>
 
-      <!-- Volume toggle button -->
-      <button id="volume-btn" aria-label="Toggle sound">🔊</button>
+      <!-- Top Controls (Volume & Fullscreen) -->
+      <div id="top-controls">
+        <button id="volume-btn" aria-label="Toggle sound" title="Toggle sound (M)">🔊</button>
+        <button id="fullscreen-btn" aria-label="Toggle fullscreen" title="Toggle fullscreen (F)">⛶</button>
+      </div>
 
-      <!-- Visit counter -->
-      <div id="visit-counter">
-        <span class="vc-dot"></span>
-        <span id="visit-count-text">1 visit</span>
+      <!-- Top info bar (Visit counter & Live clock) -->
+      <div id="top-info">
+        <div id="visit-counter">
+          <span class="vc-dot"></span>
+          <span id="visit-count-text">1 visit</span>
+        </div>
+        <div id="live-clock" class="top-pill">
+          <span class="clock-dot"></span>
+          <span id="clock-text">🇲🇦 Casablanca • --:--:--</span>
+        </div>
       </div>
 
       <!-- Profile card -->
       <div id="profile-card">
 
+        <!-- 3D Specular glare highlight (follows mouse) -->
+        <div id="card-glare"></div>
+
         <!-- Section 1: avatar + name + status -->
         <div id="profile-main">
-          <div id="avatar-wrapper">
+          <div id="avatar-wrapper" title="Click for a sparkle surprise! ✨">
             <img id="avatar" src="" alt="avatar" />
             <img id="avatar-decoration" src="" alt="" />
           </div>
@@ -75,18 +87,22 @@
         <!-- Divider -->
         <div class="card-divider"></div>
 
-        <!-- Section 2: Discord presence (static, edit in config.js) -->
-        <div id="discord-presence">
+        <!-- Section 2: Discord presence (clickable to copy tag) -->
+        <div id="discord-presence" title="Click to copy Discord username">
           <div id="discord-avatar-wrapper">
             <img id="discord-avatar" src="" alt="discord avatar" />
+            <span id="discord-status-ring"></span>
             <img id="discord-status-icon" src="" alt="" />
           </div>
           <div id="discord-info">
-            <span id="discord-username"></span>
+            <div class="discord-header-row">
+              <span id="discord-username"></span>
+              <span class="discord-tag-pill">COPY TAG</span>
+            </div>
             <span id="discord-activity"></span>
           </div>
           <!-- Animated music equalizer bars -->
-          <div id="music-bars">
+          <div id="music-bars" title="Audio playing">
             <span></span><span></span><span></span><span></span><span></span>
           </div>
         </div>
@@ -97,6 +113,9 @@
       </div>
 
     </div>
+
+    <!-- Toast notification -->
+    <div id="toast">Copied to clipboard! 📋</div>
 
     <!-- Cursor sparkle trail canvas — above everything -->
     <canvas id="cursor-canvas"></canvas>

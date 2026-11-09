@@ -1,5 +1,5 @@
 /* ============================================================
-   style.css — visual styles
+   style.css — visual styles & animations
    Colors, sizes and effects are controlled via config.js
    ============================================================ */
 
@@ -25,10 +25,16 @@
 
 :root {
   --accent:        #acc8ff;
-  --accent-dim:    rgba(172, 200, 255, 0.6);
+  --accent-dim:    rgba(172, 200, 255, 0.65);
   --accent-faint:  rgba(172, 200, 255, 0.08);
   --red:           #c81b1b;
   --red-dim:       rgba(200, 27, 27, 0.5);
+  --badge-size:    28px;
+}
+
+::selection {
+  background: rgba(172, 200, 255, 0.25);
+  color: #fff;
 }
 
 body {
@@ -36,7 +42,7 @@ body {
   background-color: #080808;
   overflow: hidden;
   height: 100vh;
-  /* Smooth font rendering */
+  user-select: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -48,20 +54,21 @@ body {
 #entry-screen {
   position: fixed;
   inset: 0;
-  z-index: 10;
+  z-index: 1000;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 22px;
 
-  background: rgba(8, 8, 8, 0.6);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: rgba(8, 8, 8, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 
   cursor: pointer;
-  transition: opacity 0.9s ease, visibility 0.9s ease;
+  transition: opacity 0.85s cubic-bezier(0.2, 0.8, 0.2, 1),
+              visibility 0.85s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* CRT scanlines on entry screen */
@@ -73,8 +80,8 @@ body {
     0deg,
     transparent,
     transparent 2px,
-    rgba(0, 0, 0, 0.08) 2px,
-    rgba(0, 0, 0, 0.08) 4px
+    rgba(0, 0, 0, 0.1) 2px,
+    rgba(0, 0, 0, 0.1) 4px
   );
   pointer-events: none;
   animation: scanline-shift 8s linear infinite;
@@ -92,44 +99,50 @@ body {
 }
 
 #entry-symbol {
-  font-size: 54px;
+  font-size: 56px;
   color: #ffffff;
-  text-shadow: 0 0 20px #acc8ff, 0 0 40px #0011ff, 0 0 80px rgba(0,17,255,0.3);
-  animation: pulse 2.5s infinite ease-in-out;
+  text-shadow: 0 0 20px #acc8ff, 0 0 40px #0011ff, 0 0 90px rgba(0, 17, 255, 0.4);
+  animation: pulse 2.6s infinite ease-in-out;
   position: relative;
   z-index: 1;
+  text-align: center;
+  padding: 0 20px;
 }
 
 #entry-hint {
   font-size: 13px;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: rgba(172, 200, 255, 0.5);
-  animation: fade-hint 2.5s infinite ease-in-out;
+  color: rgba(172, 200, 255, 0.65);
+  animation: fade-hint 2.4s infinite ease-in-out;
   position: relative;
   z-index: 1;
-  user-select: none;
+  background: rgba(172, 200, 255, 0.06);
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(172, 200, 255, 0.12);
+  backdrop-filter: blur(6px);
 }
 
 @keyframes fade-hint {
-  0%, 100% { opacity: 0.3; }
-  50%       { opacity: 0.9; }
+  0%, 100% { opacity: 0.4; transform: translateY(0); }
+  50%       { opacity: 1;   transform: translateY(-2px); }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 0.7; transform: scale(1);    }
-  50%       { opacity: 1;   transform: scale(1.12); }
+  0%, 100% { opacity: 0.75; transform: scale(1);    }
+  50%       { opacity: 1;    transform: scale(1.1); }
 }
 
-/* Loading bar at the bottom of the entry screen */
+/* Loading bar at bottom of entry screen */
 #entry-loader {
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 2px;
+  height: 2.5px;
   width: 0%;
   background: linear-gradient(90deg, transparent, var(--accent), #fff, var(--accent), transparent);
-  animation: loader-fill 1.8s cubic-bezier(0.4,0,0.2,1) forwards;
+  animation: loader-fill 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   box-shadow: 0 0 12px var(--accent);
 }
 
@@ -147,7 +160,6 @@ body {
   position: relative;
 }
 
-/* Full-screen video behind everything */
 #bg-video {
   position: fixed;
   inset: 0;
@@ -157,7 +169,6 @@ body {
   z-index: -1;
 }
 
-/* Particle canvas — sits above the video, behind the card */
 #bg-canvas {
   position: fixed;
   inset: 0;
@@ -165,78 +176,109 @@ body {
   pointer-events: none;
 }
 
-/* Cursor trail canvas — sits above everything, never blocks clicks */
 #cursor-canvas {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 999;
   pointer-events: none;
 }
 
 
 /* ============================================================
-   VOLUME BUTTON
+   TOP CONTROLS & INFO BAR
    ============================================================ */
-#volume-btn {
+#top-controls {
   position: fixed;
-  top: 16px;
-  left: 16px;
-  z-index: 5;
+  top: 18px;
+  left: 18px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-  width: 40px;
-  height: 40px;
+#volume-btn,
+#fullscreen-btn {
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  border: 1px solid rgba(172, 200, 255, 0.2);
-  background: rgba(172, 200, 255, 0.07);
-  backdrop-filter: blur(8px);
+  border: 1px solid rgba(172, 200, 255, 0.18);
+  background: rgba(15, 18, 28, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 16px;
   color: var(--accent);
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
   cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-#volume-btn:hover {
-  background: rgba(172, 200, 255, 0.18);
-  border-color: rgba(172, 200, 255, 0.4);
-  transform: scale(1.08);
-  box-shadow: 0 0 14px rgba(172, 200, 255, 0.3);
+#volume-btn:hover,
+#fullscreen-btn:hover {
+  background: rgba(172, 200, 255, 0.2);
+  border-color: rgba(172, 200, 255, 0.45);
+  transform: scale(1.1);
+  box-shadow: 0 0 18px rgba(172, 200, 255, 0.35);
 }
 
-/* Visit counter — top right */
-#visit-counter {
+#volume-btn:active,
+#fullscreen-btn:active {
+  transform: scale(0.95);
+}
+
+#top-info {
   position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 5;
+  top: 18px;
+  right: 18px;
+  z-index: 10;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  border: 1px solid rgba(172, 200, 255, 0.15);
-  background: rgba(172, 200, 255, 0.06);
-  backdrop-filter: blur(8px);
-  font-size: 12px;
-  color: var(--accent-dim);
-  letter-spacing: 1px;
-  pointer-events: none;
+  gap: 10px;
   opacity: 0;
-  transition: opacity 0.6s ease;
+  transform: translateY(-8px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
-#visit-counter.visible { opacity: 1; }
+#top-info.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
-#visit-counter .vc-dot {
-  width: 6px;
-  height: 6px;
+#visit-counter,
+.top-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 22px;
+  border: 1px solid rgba(172, 200, 255, 0.16);
+  background: rgba(15, 18, 28, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+}
+
+.vc-dot,
+.clock-dot {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: #4cff91;
-  box-shadow: 0 0 6px #4cff91;
+  box-shadow: 0 0 8px #4cff91;
   animation: dot-pulse 2s infinite;
+}
+
+.clock-dot {
+  background: #acc8ff;
+  box-shadow: 0 0 8px #acc8ff;
 }
 
 @keyframes dot-pulse {
@@ -255,15 +297,15 @@ body {
 
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  letter-spacing: 1.5px;
+  gap: 22px;
+  letter-spacing: 1.2px;
 
-  width: min(92%, var(--card-max-width, 380px));
-  padding: 28px 26px 24px;
+  width: min(92%, var(--card-max-width, 44rem));
+  padding: 30px 28px 26px;
 
   background: var(--card-background, rgba(200, 27, 27, 0.03));
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 
   border: var(--card-border, none);
   border-radius: var(--card-border-radius, 85px);
@@ -271,6 +313,28 @@ body {
   transform: translate(-50%, -50%) perspective(var(--card-tilt-perspective, 1000px)) rotateX(0deg) rotateY(0deg);
   transition: transform 700ms cubic-bezier(0.03, 0.98, 0.52, 0.99);
   will-change: transform;
+  overflow: hidden;
+}
+
+/* Dynamic 3D specular light glare follower */
+#card-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    circle 320px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.12),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  mix-blend-mode: overlay;
+  z-index: 2;
+}
+
+#profile-card:hover #card-glare {
+  opacity: 1;
 }
 
 /* Animated glowing border */
@@ -282,10 +346,10 @@ body {
   background: conic-gradient(
     from var(--border-angle, 0deg),
     transparent 0deg,
-    rgba(172, 200, 255, 0.5) 60deg,
-    rgba(200, 27, 27, 0.6) 120deg,
+    rgba(172, 200, 255, 0.6) 60deg,
+    rgba(200, 27, 27, 0.65) 120deg,
     transparent 180deg,
-    rgba(172, 200, 255, 0.3) 240deg,
+    rgba(172, 200, 255, 0.45) 240deg,
     transparent 360deg
   );
   -webkit-mask:
@@ -314,9 +378,9 @@ body {
 
 #profile-card > * { position: relative; z-index: 1; }
 
-/* Card reveal — sections animate in one by one after entry click */
+/* Card reveal animation */
 @keyframes unfold {
-  from { opacity: 0; transform: translateY(-20px) scale(0.98); }
+  from { opacity: 0; transform: translateY(-18px) scale(0.98); }
   to   { opacity: 1; transform: translateY(0)     scale(1);    }
 }
 
@@ -327,9 +391,10 @@ body {
 }
 
 #profile-card.revealed > *:nth-child(1) { animation-delay: 0ms;    }
-#profile-card.revealed > *:nth-child(2) { animation-delay: 750ms;  }
-#profile-card.revealed > *:nth-child(3) { animation-delay: 1500ms; }
-#profile-card.revealed > *:nth-child(4) { animation-delay: 2200ms; }
+#profile-card.revealed > *:nth-child(2) { animation-delay: 200ms;  }
+#profile-card.revealed > *:nth-child(3) { animation-delay: 600ms;  }
+#profile-card.revealed > *:nth-child(4) { animation-delay: 1000ms; }
+#profile-card.revealed > *:nth-child(5) { animation-delay: 1400ms; }
 
 
 /* ============================================================
@@ -338,15 +403,25 @@ body {
 #profile-main {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
 }
 
 /* Avatar */
 #avatar-wrapper {
   position: relative;
-  width: var(--avatar-size, 70px);
-  height: var(--avatar-size, 70px);
+  width: var(--avatar-size, 118px);
+  height: var(--avatar-size, 118px);
   flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#avatar-wrapper:hover {
+  transform: scale(1.06);
+}
+
+#avatar-wrapper:active {
+  transform: scale(0.94);
 }
 
 #avatar {
@@ -354,16 +429,16 @@ body {
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(249, 184, 184, 0.3);
+  border: 2px solid rgba(249, 184, 184, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 #avatar-wrapper:hover #avatar {
-  border-color: rgba(172, 200, 255, 0.6);
-  box-shadow: 0 0 20px rgba(172, 200, 255, 0.4);
+  border-color: rgba(172, 200, 255, 0.8);
+  box-shadow: 0 0 25px rgba(172, 200, 255, 0.5);
 }
 
-/* Discord-style animated decoration ring — larger than the avatar */
 #avatar-decoration {
   position: absolute;
   inset: -15%;
@@ -371,46 +446,45 @@ body {
   height: 130%;
   object-fit: contain;
   pointer-events: none;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
 }
 
-/* Name row — name span + badges side by side */
+#profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Name row */
 #profile-name {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   color: var(--accent);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 600;
   text-shadow: var(--username-glow, none);
-  flex-wrap: nowrap;
 }
 
 #name-row {
   display: flex;
-  gap: 14px;
   align-items: center;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-/* Name wrapper — auto-sized so it doesn't interfere with badges */
 .name-wrapper {
   position: relative;
-  width: auto;
-  height: auto;
-  display: flex;
-  justify-content: flex-start;
-  overflow: visible;
+  display: inline-flex;
+  align-items: center;
 }
 
-/* Name span — SVG interference filter applied directly here */
 #name-text {
   display: inline-block;
-  width: auto;
-  min-width: 0;
-  height: auto;
   line-height: 1.1;
   white-space: nowrap;
-  overflow: visible;
   color: var(--accent);
   font-size: 28px;
   font-weight: 600;
@@ -419,18 +493,19 @@ body {
   cursor: default;
 }
 
-/* Name tooltip — appears above on hover */
-.name-tooltip {
+/* Tooltip */
+.name-tooltip,
+.badge-tooltip {
   position: absolute;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 9px);
   left: 50%;
   transform: translateX(-50%) translateY(6px);
-  background: rgba(10, 10, 15, 0.88);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(172, 200, 255, 0.18);
+  background: rgba(10, 12, 20, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(172, 200, 255, 0.2);
   border-radius: 8px;
-  padding: 5px 10px;
+  padding: 5px 11px;
   white-space: nowrap;
   font-size: 11px;
   font-weight: 500;
@@ -438,105 +513,81 @@ body {
   color: var(--accent);
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  z-index: 99;
+  transition: opacity 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+              transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  z-index: 100;
 }
 
-.name-tooltip::after {
+.name-tooltip::after,
+.badge-tooltip::after {
   content: "";
   position: absolute;
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
   border: 5px solid transparent;
-  border-top-color: rgba(172, 200, 255, 0.18);
+  border-top-color: rgba(172, 200, 255, 0.2);
 }
 
-.name-wrapper:hover .name-tooltip {
+.name-wrapper:hover .name-tooltip,
+.badge-item:hover .badge-tooltip {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
 
-/* Badges */
+
+/* ============================================================
+   BADGES (BIGGER & CRISPER)
+   ============================================================ */
 #badges {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  margin-left: 10px;
-  padding: 5px 9px;
-  border-radius: 25px;
+  gap: 8px;
+  padding: 6px 13px;
+  border-radius: 30px;
   background: var(--badge-container-bg, rgba(172, 200, 255, 0.08));
-  border: var(--badge-container-border, 2px solid rgba(172, 200, 255, 0.07));
-  transition: background 0.2s ease;
+  border: var(--badge-container-border, 1.5px solid rgba(172, 200, 255, 0.12));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 4px 14px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 #badges:hover {
-  background: rgba(172, 200, 255, 0.12);
+  background: rgba(172, 200, 255, 0.14);
+  border-color: rgba(172, 200, 255, 0.3);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 0 18px rgba(172, 200, 255, 0.2);
 }
 
 .badge-item {
   position: relative;
   display: inline-flex;
   align-items: center;
+  cursor: pointer;
 }
 
 .badge-item img {
-  width: var(--badge-size, 22px);
-  height: var(--badge-size, 22px);
+  width: var(--badge-size, 28px);
+  height: var(--badge-size, 28px);
   object-fit: contain;
   display: block;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.25s ease;
 }
 
 .badge-item:hover img {
-  transform: scale(1.3) translateY(-2px);
-  filter: drop-shadow(0 2px 6px rgba(172, 200, 255, 0.5));
+  transform: scale(1.36) translateY(-4px);
+  filter: drop-shadow(0 4px 12px rgba(172, 200, 255, 0.75));
 }
 
-/* Badge tooltip */
-.badge-item .badge-tooltip {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%) translateY(6px);
-  background: rgba(10, 10, 15, 0.88);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(172, 200, 255, 0.18);
-  border-radius: 8px;
-  padding: 4px 9px;
-  white-space: nowrap;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  color: var(--accent);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  z-index: 99;
-}
-
-.badge-item .badge-tooltip::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 5px solid transparent;
-  border-top-color: rgba(172, 200, 255, 0.18);
-}
-
-.badge-item:hover .badge-tooltip {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-/* Status text — typewriter effect (cursor "|" added via ::after) */
+/* Status text typewriter */
 #profile-status {
-  margin-top: 5px;
-  min-height: 20px;
-  color: rgba(172, 200, 255, 0.72);
+  margin-top: 6px;
+  min-height: 22px;
+  color: rgba(172, 200, 255, 0.75);
   font-weight: 500;
   font-size: 15px;
   letter-spacing: 0.5px;
@@ -550,8 +601,8 @@ body {
 #profile-status::after {
   content: "|";
   display: inline-block;
-  margin-left: 2px;
-  color: rgba(172, 200, 255, 0.85);
+  margin-left: 3px;
+  color: rgba(172, 200, 255, 0.9);
   animation: blink-cursor 0.9s infinite;
 }
 
@@ -562,29 +613,36 @@ body {
 #discord-presence {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 13px 16px;
+  gap: 15px;
+  padding: 14px 18px;
   background: var(--discord-box-background, rgba(255, 255, 255, 0.05));
-  border: var(--discord-box-border, none);
-  border-radius: var(--discord-box-radius, 30px);
-  transition: background 0.25s ease, box-shadow 0.25s ease;
+  border: var(--discord-box-border, 1.5px solid rgba(172, 200, 255, 0.08));
+  border-radius: var(--discord-box-radius, 32px);
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 #discord-presence:hover {
-  background: rgba(172, 200, 255, 0.1);
-  box-shadow: 0 0 20px rgba(172, 200, 255, 0.07);
+  background: rgba(172, 200, 255, 0.12);
+  border-color: rgba(172, 200, 255, 0.25);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.35), 0 0 20px rgba(172, 200, 255, 0.12);
+  transform: translateY(-2px);
 }
 
-/* Shimmer on hover */
+#discord-presence:active {
+  transform: scale(0.99);
+}
+
+/* Hover shimmer line */
 #discord-presence::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 40%, rgba(172,200,255,0.06) 50%, transparent 60%);
+  background: linear-gradient(105deg, transparent 35%, rgba(172, 200, 255, 0.1) 50%, transparent 65%);
   transform: translateX(-100%);
-  transition: transform 0.6s ease;
+  transition: transform 0.65s ease;
   pointer-events: none;
 }
 
@@ -592,87 +650,127 @@ body {
   transform: translateX(100%);
 }
 
-/* Avatar with status icon overlay */
 #discord-avatar-wrapper {
   position: relative;
   flex-shrink: 0;
 }
 
 #discord-avatar {
-  width: var(--discord-avatar-size, 36px);
-  height: var(--discord-avatar-size, 36px);
+  width: var(--discord-avatar-size, 74px);
+  height: var(--discord-avatar-size, 74px);
   border-radius: 50%;
   object-fit: cover;
-  border: var(--discord-avatar-border, 2px solid rgba(249, 184, 184, 0.2));
+  border: var(--discord-avatar-border, 2px solid rgba(200, 27, 27, 0.15));
   display: block;
-  transition: box-shadow 0.2s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  transition: box-shadow 0.25s ease;
 }
 
 #discord-presence:hover #discord-avatar {
-  box-shadow: 0 0 10px rgba(172, 200, 255, 0.35);
+  box-shadow: 0 0 15px rgba(172, 200, 255, 0.4);
 }
 
-/* Status icon (online / idle / dnd / offline) — bottom-right corner */
+#discord-status-ring {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(200, 27, 27, 0.4);
+  animation: ring-pulse 2s infinite;
+  pointer-events: none;
+}
+
+@keyframes ring-pulse {
+  0%   { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0;   }
+}
+
 #discord-status-icon {
   position: absolute;
   bottom: 2px;
   right: 2px;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   object-fit: cover;
   border-radius: 50%;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
 }
 
 #discord-info {
   display: flex;
   flex-direction: column;
-  font-size: 12px;
-  line-height: 1.4;
-  overflow: hidden;
+  gap: 3px;
   flex: 1;
+  min-width: 0;
+}
+
+.discord-header-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
 }
 
 #discord-username {
   color: var(--accent);
   font-weight: 600;
-  font-size: 17px;
+  font-size: 18px;
+}
+
+.discord-tag-pill {
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(172, 200, 255, 0.12);
+  border: 1px solid rgba(172, 200, 255, 0.2);
+  color: var(--accent);
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+#discord-presence:hover .discord-tag-pill {
+  background: var(--accent);
+  color: #080808;
+  box-shadow: 0 0 10px rgba(172, 200, 255, 0.5);
 }
 
 #discord-activity {
   color: var(--accent-dim);
   font-style: italic;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 13.5px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-top: 2px;
 }
 
-/* Music equalizer bars (shown next to Discord activity) */
+/* Equalizer music bars */
 #music-bars {
   display: flex;
   align-items: flex-end;
-  gap: 2px;
-  height: 16px;
+  gap: 3px;
+  height: 18px;
   flex-shrink: 0;
-  opacity: 0.75;
+  padding: 0 4px;
 }
 
 #music-bars span {
   display: block;
-  width: 3px;
-  border-radius: 2px;
+  width: 3.5px;
+  border-radius: 3px;
   background: linear-gradient(to top, var(--red), var(--accent));
   animation: eq-bar 0.9s ease-in-out infinite alternate;
   transform-origin: bottom;
+  box-shadow: 0 0 6px rgba(172, 200, 255, 0.4);
 }
 
-#music-bars span:nth-child(1) { height: 6px;  animation-duration: 0.6s; }
-#music-bars span:nth-child(2) { height: 10px; animation-duration: 0.9s; animation-delay: 0.1s; }
-#music-bars span:nth-child(3) { height: 14px; animation-duration: 0.75s; animation-delay: 0.2s; }
-#music-bars span:nth-child(4) { height: 8px;  animation-duration: 1.0s; animation-delay: 0.05s; }
-#music-bars span:nth-child(5) { height: 12px; animation-duration: 0.8s; animation-delay: 0.15s; }
+#music-bars span:nth-child(1) { height: 7px;  animation-duration: 0.6s; }
+#music-bars span:nth-child(2) { height: 12px; animation-duration: 0.9s; animation-delay: 0.1s; }
+#music-bars span:nth-child(3) { height: 16px; animation-duration: 0.75s; animation-delay: 0.2s; }
+#music-bars span:nth-child(4) { height: 9px;  animation-duration: 1.0s; animation-delay: 0.05s; }
+#music-bars span:nth-child(5) { height: 14px; animation-duration: 0.8s; animation-delay: 0.15s; }
 
 @keyframes eq-bar {
   from { transform: scaleY(0.3); opacity: 0.5; }
@@ -681,46 +779,49 @@ body {
 
 
 /* ============================================================
-   SOCIAL LINKS
+   SOCIAL LINKS WITH BRAND GLOWS
    ============================================================ */
 #social-links {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: wrap;
-  min-height: 28px;
+  min-height: 32px;
 }
 
 #social-links a {
   display: flex;
+  align-items: center;
+  justify-content: center;
   color: inherit;
   text-decoration: none;
-  opacity: 0.72;
-  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  opacity: 0.78;
   position: relative;
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 #social-links a::after {
   content: attr(title);
   position: absolute;
-  bottom: calc(100% + 7px);
+  bottom: calc(100% + 8px);
   left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  background: rgba(10, 10, 15, 0.88);
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(172, 200, 255, 0.15);
+  transform: translateX(-50%) translateY(5px);
+  background: rgba(10, 12, 20, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(172, 200, 255, 0.2);
   border-radius: 6px;
-  padding: 3px 8px;
-  font-size: 10px;
+  padding: 4px 9px;
+  font-size: 10.5px;
   font-family: "CustomFont", sans-serif;
   letter-spacing: 0.5px;
   color: var(--accent);
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.18s ease, transform 0.18s ease;
-  z-index: 99;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 100;
 }
 
 #social-links a:hover::after {
@@ -730,23 +831,28 @@ body {
 
 #social-links a:hover {
   opacity: 1;
-  transform: translateY(-4px) scale(1.1);
+  transform: translateY(-5px) scale(1.15);
 }
 
-/* drop-shadow follows the icon's real silhouette (transparent background) */
 .social-icon {
   display: block;
-  width: var(--icon-size, 32px);
-  height: var(--icon-size, 32px);
+  width: var(--icon-size, 36px);
+  height: var(--icon-size, 36px);
   object-fit: contain;
-  border-radius: var(--icon-border-radius, 0);
-  filter: drop-shadow(0 0 5px var(--icon-glow-color, transparent));
-  transition: filter 0.2s ease;
+  border-radius: var(--icon-border-radius, 8px);
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+  transition: filter 0.25s ease, transform 0.25s ease;
 }
 
-#social-links a:hover .social-icon {
-  filter: drop-shadow(0 0 9px var(--icon-glow-color, #fff)) brightness(1.15);
-}
+/* Brand-specific glows */
+#social-links a[title*="Discord"]:hover .social-icon   { filter: drop-shadow(0 0 12px #5865F2) brightness(1.2); }
+#social-links a[title*="Spotify"]:hover .social-icon   { filter: drop-shadow(0 0 12px #1DB954) brightness(1.2); }
+#social-links a[title*="Instagram"]:hover .social-icon { filter: drop-shadow(0 0 12px #E1306C) brightness(1.2); }
+#social-links a[title*="Github"]:hover .social-icon    { filter: drop-shadow(0 0 12px #FFFFFF) brightness(1.3); }
+#social-links a[title*="TikTok"]:hover .social-icon    { filter: drop-shadow(0 0 12px #00F2FE) brightness(1.2); }
+#social-links a[title*="Reddit"]:hover .social-icon    { filter: drop-shadow(0 0 12px #FF4500) brightness(1.2); }
+#social-links a[title*="Youtube"]:hover .social-icon   { filter: drop-shadow(0 0 12px #FF0000) brightness(1.2); }
+#social-links a[title*="Pinterest"]:hover .social-icon { filter: drop-shadow(0 0 12px #E60023) brightness(1.2); }
 
 
 /* ============================================================
@@ -755,18 +861,88 @@ body {
 .card-divider {
   width: 100%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(172,200,255,0.12), rgba(200,27,27,0.12), transparent);
-  margin: -8px 0;
+  background: linear-gradient(90deg, transparent, rgba(172, 200, 255, 0.15), rgba(200, 27, 27, 0.18), transparent);
+  margin: -4px 0;
 }
 
 
 /* ============================================================
-   RESPONSIVE — mobile
+   TOAST NOTIFICATION
    ============================================================ */
+#toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(40px);
+  background: rgba(12, 16, 26, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(172, 200, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(172, 200, 255, 0.2);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-size: 13.5px;
+  letter-spacing: 0.6px;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 2000;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+
+/* ============================================================
+   RESPONSIVE DESIGN
+   ============================================================ */
+@media (max-width: 680px) {
+  #profile-card {
+    padding: 24px 20px 20px;
+    border-radius: 40px;
+    gap: 18px;
+  }
+
+  #profile-main {
+    flex-direction: column;
+    text-align: center;
+    gap: 14px;
+  }
+
+  #name-row {
+    justify-content: center;
+  }
+
+  #badges {
+    margin-left: 0;
+  }
+
+  #top-info {
+    top: 14px;
+    right: 14px;
+    gap: 6px;
+  }
+
+  #top-controls {
+    top: 14px;
+    left: 14px;
+  }
+
+  .top-pill,
+  #visit-counter {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+}
+
 @media (max-width: 480px) {
-  #name-text        { font-size: 20px; }
+  #name-text        { font-size: 22px; }
   #discord-username { font-size: 15px; }
   #discord-activity { font-size: 12px; }
   #profile-status   { font-size: 13px; }
-  #badges           { gap: 4px; padding: 4px 7px; }
+  #badges           { gap: 5px; padding: 5px 9px; }
+  :root             { --badge-size: 24px; }
 }
