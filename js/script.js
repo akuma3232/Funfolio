@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initNameEffect();
 
   // -- Badges --
-  document.documentElement.style.setProperty("--badge-size",             CONFIG.badgeSize || "28px");
+  document.documentElement.style.setProperty("--badge-size",             CONFIG.badgeSize || "36px");
   document.documentElement.style.setProperty("--badge-container-bg",     CONFIG.badgeContainerBackground);
   document.documentElement.style.setProperty("--badge-container-border", CONFIG.badgeContainerBorder);
 
@@ -41,6 +41,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
       item.appendChild(tooltip);
       item.appendChild(img);
+
+      // Interactive badge click
+      item.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const rect = item.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        if (typeof spawnBurstParticles === "function") {
+          spawnBurstParticles(cx, cy, 15);
+        }
+        playCyberBeep(940, 0.07);
+        showToast(`★ ${badge.label} — Imperial Honor 👑`);
+      });
+
       badgesContainer.appendChild(item);
     });
   }
@@ -153,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Avatar click sparkle burst celebration
   const avatarWrapper = document.getElementById("avatar-wrapper");
   if (avatarWrapper) {
-    avatarWrapper.addEventListener("click", (e) => {
+    avatarWrapper.addEventListener("click", () => {
       const rect = avatarWrapper.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -161,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
         spawnBurstParticles(centerX, centerY, 24);
       }
       playCyberBeep(880, 0.08);
-      showToast("✨ Emperor power activated!");
+      showToast("👑 Imperial Emperor power activated! ✨");
     });
   }
 
@@ -178,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // -- Cursor sparkle trail (active from page load) --
   initCursorTrail();
 
-  // -- Visit counter & Live clock --
+  // -- Visit counter & Live Imperial clock --
   initVisitCounter();
   initLiveClock();
 
@@ -202,7 +216,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (bgVideo) {
       bgVideo.muted = false;
-      bgVideo.play().catch(() => {});
+      const playPromise = bgVideo.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          bgVideo.muted = true;
+          bgVideo.play().then(() => {
+            bgVideo.muted = false;
+          }).catch(() => {});
+        });
+      }
     }
 
     initParticles();
@@ -235,14 +257,6 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       enterExperience();
       return;
-    }
-
-    // 'M' to toggle mute
-    if (e.code === "KeyM" && entered && bgVideo) {
-      bgVideo.muted = !bgVideo.muted;
-      const volumeBtn = document.getElementById("volume-btn");
-      if (volumeBtn) volumeBtn.textContent = bgVideo.muted ? "🔇" : "🔊";
-      showToast(bgVideo.muted ? "Sound Muted 🔇" : "Sound Playing 🔊");
     }
 
     // 'F' to toggle fullscreen
@@ -287,21 +301,48 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --------------------------------------------------------
-  // Top controls: Volume & Fullscreen
+  // Top controls: Fullscreen
   // --------------------------------------------------------
-  const volumeBtn = document.getElementById("volume-btn");
-  if (volumeBtn && bgVideo) {
-    volumeBtn.addEventListener("click", () => {
-      bgVideo.muted = !bgVideo.muted;
-      volumeBtn.textContent = bgVideo.muted ? "🔇" : "🔊";
-      showToast(bgVideo.muted ? "Sound Muted 🔇" : "Sound Playing 🔊");
-    });
-  }
-
   const fullscreenBtn = document.getElementById("fullscreen-btn");
   if (fullscreenBtn) {
     fullscreenBtn.addEventListener("click", toggleFullscreen);
   }
+
+  // --------------------------------------------------------
+  // Mobile Gyroscope 3D Parallax Tilt
+  // --------------------------------------------------------
+  if (window.DeviceOrientationEvent && profileCard) {
+    window.addEventListener("deviceorientation", (e) => {
+      if (e.gamma !== null && e.beta !== null && window.innerWidth <= 768) {
+        const gamma = Math.max(-25, Math.min(25, e.gamma));
+        const beta  = Math.max(-25, Math.min(25, e.beta - 45));
+        const xRot = (beta / 25) * 10;
+        const yRot = -(gamma / 25) * 10;
+        profileCard.style.transform = `translate(-50%, -50%) perspective(${CONFIG.cardTiltPerspective}) rotateX(${xRot}deg) rotateY(${yRot}deg)`;
+      }
+    }, { passive: true });
+  }
+
+  // --------------------------------------------------------
+  // Konami Code Easter Egg (↑ ↑ ↓ ↓ ← → ← → B A)
+  // --------------------------------------------------------
+  const konamiSequence = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "KeyB", "KeyA"];
+  let konamiIdx = 0;
+  document.addEventListener("keydown", (e) => {
+    if (e.code === konamiSequence[konamiIdx]) {
+      konamiIdx++;
+      if (konamiIdx === konamiSequence.length) {
+        konamiIdx = 0;
+        if (typeof spawnBurstParticles === "function") {
+          spawnBurstParticles(window.innerWidth / 2, window.innerHeight / 2, 70);
+        }
+        playCyberBeep(1200, 0.25);
+        showToast("👑 IMPERIAL PROTOCOL: GOD MODE ACTIVATED! 👑");
+      }
+    } else {
+      konamiIdx = 0;
+    }
+  });
 
 });
 
@@ -339,7 +380,7 @@ function showToast(message) {
   clearTimeout(toastTimeout);
   toastTimeout = setTimeout(() => {
     toast.classList.remove("show");
-  }, 2200);
+  }, 2300);
 }
 
 
@@ -396,7 +437,7 @@ function playCyberBeep(freq = 800, duration = 0.08) {
 
 
 // ============================================================
-// LIVE CLOCK & VISIT COUNTER
+// LIVE IMPERIAL CLOCK & VISIT COUNTER
 // ============================================================
 function initVisitCounter() {
   const key   = "funfolio_visits";
@@ -414,7 +455,7 @@ function initLiveClock() {
   if (!clockEl) return;
 
   const timezone = CONFIG.timezone || "Africa/Casablanca";
-  const locName  = CONFIG.locationName || "🇲🇦 Casablanca";
+  const locName  = CONFIG.locationName || "🏰 Imperial Palace • Ruling the Empire";
 
   function update() {
     try {

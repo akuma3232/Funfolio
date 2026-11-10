@@ -32,9 +32,9 @@ const CONFIG = {
   // ----------------------------------------------------------
   // AVATAR
   // ----------------------------------------------------------
-  avatarSize:       "118px",
+  avatarSize:       "135px",
   // animated Discord-style decoration — leave "" to disable
-  avatarDecoration: "https://cdn.discordapp.com/avatar-decoration-presets/a_da532f804b47f1681006c2996eb07b2a.png",
+  avatarDecoration: "assets/decor.png",
 
   // ----------------------------------------------------------
   // BADGES / ROLES
@@ -48,7 +48,7 @@ const CONFIG = {
     { icon: "assets/badges/conan.png", label: "Best Anime"},
     { icon: "assets/badges/supervisor.png", label: "Supervisor"},
   ],
-  badgeSize:                "28px",  // enlarged badge size (was 22px)
+  badgeSize:                "36px",  // enlarged badge size (was 28px)
   badgeContainerBackground: "rgba(172, 200, 255, 0.08)",
   badgeContainerBorder:     "1.5px solid rgba(172, 200, 255, 0.12)",
 
@@ -56,7 +56,7 @@ const CONFIG = {
   // TIME & LOCATION DISPLAY
   // ----------------------------------------------------------
   showLiveClock:   true,
-  locationName:    "🇲🇦 Casablanca",
+  locationName:    "🏰 Imperial Palace • Ruling the Empire",
   timezone:        "Africa/Casablanca",
 
   // ----------------------------------------------------------
@@ -91,7 +91,7 @@ const CONFIG = {
   // ----------------------------------------------------------
   // CARD
   // ----------------------------------------------------------
-  cardMaxWidth:        "44rem",
+  cardMaxWidth:        "58rem",
   cardBorderRadius:    "85px",
   cardBackground:      "rgba(200, 27, 27, 0.03)",
   cardBorder:          "none",
