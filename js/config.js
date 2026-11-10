@@ -84,8 +84,8 @@ const CONFIG = {
     { name: "Youtube ", url: "https://www.youtube.com/@akuma3232",     icon: "assets/icons/youtube.png"},
     { name: "Pinterest", url: "https://www.pinterest.com/akuma32__/",     icon: "assets/icons/pinterest.png"},
   ],
-  iconSize:         "36px",
-  iconBorderRadius: "8px",
+  iconSize:         "46px",
+  iconBorderRadius: "10px",
   iconGlowColor:    "#ffd1d1",
 
   // ----------------------------------------------------------

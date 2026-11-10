@@ -31,13 +31,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const item    = document.createElement("div");
       item.className = "badge-item";
 
+      const labelText = badge.label || "Imperial Honor";
+
       const tooltip = document.createElement("span");
       tooltip.className   = "badge-tooltip";
-      tooltip.textContent = badge.label || "";
+      tooltip.textContent = labelText;
 
       const img = document.createElement("img");
       img.src = badge.icon;
-      img.alt = badge.label || "";
+      img.alt = labelText;
 
       item.appendChild(tooltip);
       item.appendChild(img);
@@ -52,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
           spawnBurstParticles(cx, cy, 15);
         }
         playCyberBeep(940, 0.07);
-        showToast(`★ ${badge.label} — Imperial Honor 👑`);
+        showToast(`★ ${labelText} — Imperial Honor 👑`);
       });
 
       badgesContainer.appendChild(item);
@@ -103,12 +105,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const socialContainer = document.getElementById("social-links");
   if (socialContainer) {
+    const brandColorMap = {
+      discord:   "#5865F2",
+      spotify:   "#1DB954",
+      instagram: "#E1306C",
+      github:    "#FFFFFF",
+      tiktok:    "#00F2FE",
+      reddit:    "#FF4500",
+      youtube:   "#FF0000",
+      pinterest: "#E60023",
+      twitter:   "#1DA1F2",
+      x:         "#FFFFFF",
+      twitch:    "#9146FF",
+      telegram:  "#229ED9",
+      steam:     "#66C0F4",
+      linkedin:  "#0A66C2",
+      facebook:  "#1877F2",
+      snapchat:  "#FFFC00",
+      kick:      "#53FC18",
+      gitlab:    "#FC6D26"
+    };
+
     CONFIG.socialLinks.forEach((link) => {
       const a = document.createElement("a");
       a.href   = link.url;
       a.target = "_blank";
       a.rel    = "noopener noreferrer";
       a.title  = link.name;
+
+      // Auto-detect brand glow so ANY new social matches the imperial aesthetic
+      const key = (link.name || "").toLowerCase().trim();
+      const glow = link.glow || brandColorMap[key] || CONFIG.iconGlowColor || "#acc8ff";
+      a.style.setProperty("--brand-glow", glow);
 
       const icon = document.createElement("img");
       icon.className = "social-icon";
@@ -151,18 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
     statusRing.style.background = statusColorMap[CONFIG.discordPresenceStatus] || statusColorMap.offline;
   }
 
-  // Click to copy Discord username
-  const discordPresence = document.getElementById("discord-presence");
-  if (discordPresence) {
-    discordPresence.addEventListener("click", () => {
-      const textToCopy = CONFIG.discordUsername || "Akuma";
-      navigator.clipboard.writeText(textToCopy).then(() => {
-        showToast("Discord username copied! 📋");
-      }).catch(() => {
-        showToast("Discord: " + textToCopy);
-      });
-    });
-  }
 
   // Avatar click sparkle burst celebration
   const avatarWrapper = document.getElementById("avatar-wrapper");
@@ -192,8 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // -- Cursor sparkle trail (active from page load) --
   initCursorTrail();
 
-  // -- Visit counter & Live Imperial clock --
-  initVisitCounter();
+  // -- Live Imperial clock --
   initLiveClock();
 
   // --------------------------------------------------------
@@ -437,19 +452,8 @@ function playCyberBeep(freq = 800, duration = 0.08) {
 
 
 // ============================================================
-// LIVE IMPERIAL CLOCK & VISIT COUNTER
+// LIVE IMPERIAL CLOCK
 // ============================================================
-function initVisitCounter() {
-  const key   = "funfolio_visits";
-  const count = (parseInt(localStorage.getItem(key) || "0", 10)) + 1;
-  localStorage.setItem(key, count);
-
-  const text = document.getElementById("visit-count-text");
-  if (text) {
-    text.textContent = count === 1 ? "1st visit 👑" : `${count.toLocaleString()} visits`;
-  }
-}
-
 function initLiveClock() {
   const clockEl = document.getElementById("clock-text");
   if (!clockEl) return;

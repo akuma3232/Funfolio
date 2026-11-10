@@ -45,12 +45,8 @@
         <button id="fullscreen-btn" aria-label="Toggle fullscreen" title="Toggle fullscreen (F)">⛶</button>
       </div>
 
-      <!-- Top info bar (Visit counter & Live Imperial clock) -->
+      <!-- Top info bar (Live Imperial clock) -->
       <div id="top-info">
-        <div id="visit-counter">
-          <span class="vc-dot"></span>
-          <span id="visit-count-text">1 visit</span>
-        </div>
         <div id="live-clock" class="top-pill">
           <span class="clock-dot"></span>
           <span id="clock-text">🏰 Imperial Palace • Ruling the Empire • --:--:--</span>
@@ -86,18 +82,15 @@
         <!-- Divider -->
         <div class="card-divider"></div>
 
-        <!-- Section 2: Discord presence (clickable to copy tag) -->
-        <div id="discord-presence" title="Click to copy Discord username">
+        <!-- Section 2: Discord presence -->
+        <div id="discord-presence">
           <div id="discord-avatar-wrapper">
             <img id="discord-avatar" src="" alt="discord avatar" />
             <span id="discord-status-ring"></span>
             <img id="discord-status-icon" src="" alt="" />
           </div>
           <div id="discord-info">
-            <div class="discord-header-row">
-              <span id="discord-username"></span>
-              <span class="discord-tag-pill">COPY TAG</span>
-            </div>
+            <span id="discord-username"></span>
             <span id="discord-activity"></span>
           </div>
           <!-- Animated music equalizer bars -->
@@ -114,7 +107,7 @@
     </div>
 
     <!-- Toast notification -->
-    <div id="toast">Copied to clipboard! 📋</div>
+    <div id="toast"></div>
 
     <!-- Cursor sparkle trail canvas — above everything -->
     <canvas id="cursor-canvas"></canvas>
