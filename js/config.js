@@ -42,11 +42,11 @@ const CONFIG = {
   // ----------------------------------------------------------
   badges: [
     { icon: "assets/badges/owner.png",    label: "Owner"    },
-    { icon: "assets/badges/morocco.png", label: "Royal" },
-    { icon: "assets/badges/police.png",  label: "Futur Job"  },
-    { icon: "assets/badges/cia.png",     label: "CIA"     },
+    { icon: "assets/badges/myroyalemblem.png", label: "The Emperor Of Caelvorne" },
+    { icon: "assets/badges/verif.png",  label: "Verified"  },
+    { icon: "assets/badges/staff.png",     label: "High Staff"     },
+    { icon: "assets/badges/dev.png", label: "Developer"},
     { icon: "assets/badges/conan.png", label: "Best Anime"},
-    { icon: "assets/badges/supervisor.png", label: "Supervisor"},
   ],
   badgeSize:                "36px",  // enlarged badge size (was 28px)
   badgeContainerBackground: "rgba(172, 200, 255, 0.08)",
