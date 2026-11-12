@@ -41,8 +41,8 @@ const CONFIG = {
   // Add, remove or reorder. "icon" = path inside assets/badges/
   // ----------------------------------------------------------
   badges: [
-    { icon: "assets/badges/owner.png",    label: "Owner"    },
-    { icon: "assets/badges/myroyalemblem.png", label: "The Emperor Of Caelvorne" },
+    { icon: "assets/badges/owner.png",    label: "The Emperor Of Caelvorne"    },
+    { icon: "assets/badges/myroyalemblem.png", label: "The Emperial Emblem" },
     { icon: "assets/badges/verif.png",  label: "Verified"  },
     { icon: "assets/badges/staff.png",     label: "High Staff"     },
     { icon: "assets/badges/dev.png", label: "Developer"},
